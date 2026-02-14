@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Logic Gates Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <style>
+    body { font-family: Arial; text-align: center; }
+    .led {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: inline-block;
+      margin: 10px;
+    }
+    table { margin: auto; border-collapse: collapse; }
+    td, th { border: 1px solid black; padding: 8px; }
+  </style>
+</head>
+<body>
+
+<h2>Logic Gates Dashboard</h2>
+
+<label>Input A:
+  <select id="a" onchange="update()">
+    <option value="0">0</option>
+    <option value="1">1</option>
+  </select>
+</label>
+
+<label>Input B:
+  <select id="b" onchange="update()">
+    <option value="0">0</option>
+    <option value="1">1</option>
+  </select>
+</label>
+
+<h3>LED Outputs</h3>
+<div>
+  AND <div id="andLed" class="led"></div>
+  OR <div id="orLed" class="led"></div>
+  XOR <div id="xorLed" class="led"></div>
+  NOT A <div id="notALed" class="led"></div>
+  NOT B <div id="notBLed" class="led"></div>
+</div>
+
+<h3>Truth Table</h3>
+<table id="truthTable">
+  <thead>
+    <tr>
+      <th>A</th><th>B</th><th>AND</th><th>OR</th><th>XOR</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script>
+function setLed(id, value) {
+  document.getElementById(id).style.backgroundColor =
+    value ? "green" : "red";
+}
+
+function update() {
+  let a = parseInt(document.getElementById("a").value);
+  let b = parseInt(document.getElementById("b").value);
+
+  let AND = a & b;
+  let OR = a | b;
+  let XOR = a ^ b;
+  let NOTA = a ? 0 : 1;
+  let NOTB = b ? 0 : 1;
+
+  setLed("andLed", AND);
+  setLed("orLed", OR);
+  setLed("xorLed", XOR);
+  setLed("notALed", NOTA);
+  setLed("notBLed", NOTB);
+
+  generateTruthTable();
+}
+
+function generateTruthTable() {
+  let tbody = document.querySelector("#truthTable tbody");
+  tbody.innerHTML = "";
+  let combinations = [[0,0],[0,1],[1,0],[1,1]];
+  combinations.forEach(([a,b]) => {
+    let row = `<tr>
+      <td>${a}</td>
+      <td>${b}</td>
+      <td>${a & b}</td>
+      <td>${a | b}</td>
+      <td>${a ^ b}</td>
+    </tr>`;
+    tbody.innerHTML += row;
+  });
+}
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js');
+}
+
+update();
+</script>
+
+</body>
+</html>
