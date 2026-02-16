@@ -3,82 +3,119 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FPGA Virtual Lab</title>
+<title>FPGA Virtual Digital Lab</title>
 <style>
+/* General body styling */
 body {
-    font-family: Arial, sans-serif;
     margin: 0;
-    background: #1a1a1a;
-    color: #f1f1f1;
+    font-family: Arial, sans-serif;
+    background-color: #121212;
+    color: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
+
+/* Header */
 header {
-    background: #0d47a1;
-    padding: 15px;
+    width: 100%;
+    padding: 20px;
+    background-color: #0d47a1;
     text-align: center;
-    font-size: 1.5em;
+    font-size: 1.8em;
+    font-weight: bold;
 }
+
+/* Container for cards */
 .container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 20px;
-    padding: 15px;
+    padding: 20px;
+    width: 100%;
+    max-width: 1200px;
 }
+
+/* Card style */
 .card {
-    background: #222;
-    padding: 15px;
+    background-color: #1e1e1e;
     border-radius: 10px;
-    min-width: 280px;
-    max-width: 500px;
+    box-shadow: 0 0 15px #000;
+    padding: 20px;
     flex: 1;
-    box-shadow: 0 0 10px #000;
+    min-width: 300px;
+    max-width: 450px;
 }
+
+/* Card headers */
 .card h2 {
-    text-align: center;
     margin-top: 0;
+    text-align: center;
     color: #00bcd4;
 }
+
+/* Buttons */
+button {
+    padding: 10px 15px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    background-color: #0d47a1;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+}
+button:hover {
+    background-color: #1565c0;
+}
+
+/* Inputs styling */
+.inputs {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 10px 0;
+}
+.inputs label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Textarea */
 textarea {
     width: 100%;
-    margin: 10px 0;
     border-radius: 5px;
     padding: 10px;
     font-family: monospace;
-}
-button {
-    padding: 10px 15px;
-    margin: 5px;
-    border: none;
-    border-radius: 5px;
-    background: #0d47a1;
-    color: white;
-    cursor: pointer;
-}
-button:hover {
-    background: #1565c0;
+    background-color: #222;
+    color: #f0f0f0;
+    border: 1px solid #555;
 }
 
-/* LED array */
+/* LED Array */
 .led-container {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
     gap: 8px;
-    margin: 15px 0;
+    margin: 20px 0;
 }
 .led {
     width: 30px;
     height: 30px;
     border-radius: 50%;
     background-color: #333;
-    box-shadow: 0 0 3px #000 inset;
+    box-shadow: inset 0 0 3px #000;
 }
 .led.on {
     background-color: lime;
-    box-shadow: 0 0 15px lime;
+    box-shadow: 0 0 10px lime;
 }
 
-/* 7-segment */
+/* 7-Segment Display */
 .seven-segment {
     position: relative;
     width: 100px;
@@ -87,10 +124,10 @@ button:hover {
 }
 .segment {
     position: absolute;
-    background: #333;
+    background-color: #333;
 }
 .segment.on {
-    background: red;
+    background-color: red;
     box-shadow: 0 0 8px red;
 }
 .a { top: 0; left: 20px; width: 60px; height: 12px; }
@@ -100,17 +137,6 @@ button:hover {
 .e { bottom: 15px; left: 0; width: 12px; height: 60px; }
 .f { top: 15px; left: 0; width: 12px; height: 60px; }
 .g { top: 74px; left: 20px; width: 60px; height: 12px; }
-
-/* Inputs */
-.inputs {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    margin: 10px 0;
-}
-.inputs label {
-    margin: 5px;
-}
 </style>
 </head>
 <body>
@@ -119,7 +145,7 @@ button:hover {
 
 <div class="container">
 
-<!-- HDL Editor & Inputs -->
+<!-- HDL Editor -->
 <div class="card">
 <h2>HDL Editor</h2>
 <textarea id="hdlCode" rows="6">OUT = A AND B;</textarea>
@@ -132,23 +158,23 @@ button:hover {
 <button onclick="runHDL()">Run Simulation</button>
 </div>
 
-<!-- LED Array -->
+<!-- LED Output -->
 <div class="card">
-<h2>8-bit LED Output</h2>
+<h2>8-Bit LED Output</h2>
 <div id="ledArray" class="led-container"></div>
 </div>
 
-<!-- 7 Segment -->
+<!-- 7-Segment Display -->
 <div class="card">
 <h2>7-Segment Display</h2>
 <div class="seven-segment">
-<div class="segment a"></div>
-<div class="segment b"></div>
-<div class="segment c"></div>
-<div class="segment d"></div>
-<div class="segment e"></div>
-<div class="segment f"></div>
-<div class="segment g"></div>
+    <div class="segment a"></div>
+    <div class="segment b"></div>
+    <div class="segment c"></div>
+    <div class="segment d"></div>
+    <div class="segment e"></div>
+    <div class="segment f"></div>
+    <div class="segment g"></div>
 </div>
 <p style="text-align:center;">Displays lower 4 bits of LED output</p>
 </div>
@@ -156,10 +182,10 @@ button:hover {
 </div>
 
 <script>
-// LED setup
+// Create 8 LEDs
 const ledContainer = document.getElementById("ledArray");
-for (let i=0;i<8;i++){
-    const led=document.createElement("div");
+for(let i=0;i<8;i++){
+    const led = document.createElement("div");
     led.classList.add("led");
     ledContainer.appendChild(led);
 }
@@ -178,38 +204,38 @@ const digitMap = {
     9: ['a','b','c','d','f','g']
 };
 function updateSevenSegment(value){
-    const segments=document.querySelectorAll(".segment");
-    segments.forEach(s=>s.classList.remove("on"));
+    const segments = document.querySelectorAll(".segment");
+    segments.forEach(s => s.classList.remove("on"));
     if(digitMap[value]){
-        digitMap[value].forEach(s=>document.querySelector("."+s).classList.add("on"));
+        digitMap[value].forEach(s => document.querySelector("."+s).classList.add("on"));
     }
 }
 
-// HDL Simulator
+// HDL simulator
 function runHDL(){
-    const code=document.getElementById("hdlCode").value.toUpperCase();
-    const A=document.getElementById("inputA").checked?1:0;
-    const B=document.getElementById("inputB").checked?1:0;
-    const C=document.getElementById("inputC").checked?1:0;
-    const D=document.getElementById("inputD").checked?1:0;
+    const code = document.getElementById("hdlCode").value.toUpperCase();
+    const A = document.getElementById("inputA").checked?1:0;
+    const B = document.getElementById("inputB").checked?1:0;
+    const C = document.getElementById("inputC").checked?1:0;
+    const D = document.getElementById("inputD").checked?1:0;
 
-    let result=0;
-    if(code.includes("AND")) result=A&B;
-    else if(code.includes("OR")) result=A|B;
-    else if(code.includes("XOR")) result=A^B;
-    else if(code.includes("NAND")) result=!(A&B)?1:0;
-    else if(code.includes("NOT A")) result=A?0:1;
+    let result = 0;
+    if(code.includes("AND")) result = A & B;
+    else if(code.includes("OR")) result = A | B;
+    else if(code.includes("XOR")) result = A ^ B;
+    else if(code.includes("NAND")) result = !(A & B)?1:0;
+    else if(code.includes("NOT A")) result = A?0:1;
 
-    // Fill 8-bit output
-    const outputByte=Array(8).fill(result).join('');
-    const leds=document.querySelectorAll(".led");
+    // 8-bit LED output
+    const outputByte = Array(8).fill(result).join('');
+    const leds = document.querySelectorAll(".led");
     for(let i=0;i<8;i++){
         if(outputByte[i]==="1") leds[i].classList.add("on");
         else leds[i].classList.remove("on");
     }
 
-    // 7-segment lower nibble
-    const lowerNibble=parseInt(outputByte.slice(4),2);
+    // 7-segment lower 4 bits
+    const lowerNibble = parseInt(outputByte.slice(4),2);
     updateSevenSegment(lowerNibble);
 }
 </script>
