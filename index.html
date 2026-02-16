@@ -44,7 +44,7 @@ header {
     background:#1e1e1e;
     padding:20px;
     border-radius:0 10px 10px 10px;
-    max-width:800px;
+    max-width:1000px;
     margin:0 auto 20px auto;
 }
 
@@ -58,6 +58,18 @@ header {
 .card h2 {
     text-align:center;
     color:#00bcd4;
+}
+
+/* Layout for editor + truth table */
+.editor-container {
+    display:flex;
+    flex-wrap:wrap;
+    gap:20px;
+    justify-content:center;
+}
+.editor-card, .truth-card {
+    flex:1;
+    min-width:280px;
 }
 
 /* Buttons */
@@ -161,6 +173,31 @@ button:hover {background:#1565c0;}
 .truth-table th {
     background:#333;
 }
+
+/* Waveform Viewer */
+.waveform {
+    background:#222;
+    border-radius:10px;
+    padding:10px;
+    overflow-x:auto;
+    white-space:nowrap;
+    font-family: monospace;
+}
+.waveform-line {
+    margin:3px 0;
+}
+.waveform-bit {
+    display:inline-block;
+    width:20px;
+    text-align:center;
+}
+.waveform-bit.on {
+    color:lime;
+    font-weight:bold;
+}
+.waveform-bit.off {
+    color:#555;
+}
 </style>
 </head>
 <body>
@@ -174,11 +211,12 @@ button:hover {background:#1565c0;}
     <div class="tab" data-tab="hdl">HDL Exercises</div>
 </div>
 
-<!-- Combinational Logic Tab -->
+<!-- Combinational Tab -->
 <div class="tab-content" id="combinational" style="display:block;">
-<div class="card">
-<h2>Combinational Experiment</h2>
-<textarea id="hdlCombinational" rows="4">OUT = A AND B;</textarea>
+<div class="editor-container">
+<div class="card editor-card">
+<h2>HDL Editor</h2>
+<textarea id="hdlCombinational" rows="5" style="width:100%">OUT = A AND B;</textarea>
 <div class="inputs">
 <label>A <input type="checkbox" id="A1"></label>
 <label>B <input type="checkbox" id="B1"></label>
@@ -188,8 +226,17 @@ button:hover {background:#1565c0;}
 <button onclick="runHDL('combinational')">Run Simulation</button>
 </div>
 
+<div class="card truth-card">
+<h2>Truth Table</h2>
+<table class="truth-table" id="truthCombinational">
+<thead><tr><th>A</th><th>B</th><th>C</th><th>D</th><th>OUT</th><th>HEX</th></tr></thead>
+<tbody></tbody>
+</table>
+</div>
+</div>
+
 <div class="card">
-<h2>LED Array (Output Bits)</h2>
+<h2>LED Array</h2>
 <div id="ledCombinational" class="led-container"></div>
 </div>
 
@@ -207,19 +254,17 @@ button:hover {background:#1565c0;}
 </div>
 
 <div class="card">
-<h3>Truth Table</h3>
-<table class="truth-table" id="truthCombinational">
-<thead><tr><th>A</th><th>B</th><th>C</th><th>D</th><th>OUT</th><th>HEX</th></tr></thead>
-<tbody></tbody>
-</table>
+<h2>Waveform Viewer</h2>
+<div id="waveformCombinational" class="waveform"></div>
 </div>
 </div>
 
-<!-- Sequential Logic Tab -->
+<!-- Sequential Tab -->
 <div class="tab-content" id="sequential">
-<div class="card">
-<h2>Sequential Experiment</h2>
-<textarea id="hdlSequential" rows="4">OUT = A AND B;</textarea>
+<div class="editor-container">
+<div class="card editor-card">
+<h2>HDL Editor</h2>
+<textarea id="hdlSequential" rows="5" style="width:100%">OUT = A AND B;</textarea>
 <div class="inputs">
 <label>A <input type="checkbox" id="A2"></label>
 <label>B <input type="checkbox" id="B2"></label>
@@ -229,8 +274,17 @@ button:hover {background:#1565c0;}
 <button onclick="runHDL('sequential')">Run Simulation</button>
 </div>
 
+<div class="card truth-card">
+<h2>Truth Table</h2>
+<table class="truth-table" id="truthSequential">
+<thead><tr><th>A</th><th>B</th><th>C</th><th>D</th><th>OUT</th><th>HEX</th></tr></thead>
+<tbody></tbody>
+</table>
+</div>
+</div>
+
 <div class="card">
-<h2>LED Array (Output Bits)</h2>
+<h2>LED Array</h2>
 <div id="ledSequential" class="led-container"></div>
 </div>
 
@@ -246,13 +300,19 @@ button:hover {background:#1565c0;}
 <p id="hexSequential"></p>
 </div>
 </div>
+
+<div class="card">
+<h2>Waveform Viewer</h2>
+<div id="waveformSequential" class="waveform"></div>
+</div>
 </div>
 
-<!-- HDL Exercises Tab -->
+<!-- HDL Tab -->
 <div class="tab-content" id="hdl">
-<div class="card">
-<h2>HDL Exercise</h2>
-<textarea id="hdlLab" rows="4">OUT = A AND B;</textarea>
+<div class="editor-container">
+<div class="card editor-card">
+<h2>HDL Editor</h2>
+<textarea id="hdlLab" rows="5" style="width:100%">OUT = A AND B;</textarea>
 <div class="inputs">
 <label>A <input type="checkbox" id="A3"></label>
 <label>B <input type="checkbox" id="B3"></label>
@@ -262,8 +322,17 @@ button:hover {background:#1565c0;}
 <button onclick="runHDL('hdl')">Run Simulation</button>
 </div>
 
+<div class="card truth-card">
+<h2>Truth Table</h2>
+<table class="truth-table" id="truthHDL">
+<thead><tr><th>A</th><th>B</th><th>C</th><th>D</th><th>OUT</th><th>HEX</th></tr></thead>
+<tbody></tbody>
+</table>
+</div>
+</div>
+
 <div class="card">
-<h2>LED Array (Output Bits)</h2>
+<h2>LED Array</h2>
 <div id="ledHDL" class="led-container"></div>
 </div>
 
@@ -279,6 +348,11 @@ button:hover {background:#1565c0;}
 <p id="hexHDL"></p>
 </div>
 </div>
+
+<div class="card">
+<h2>Waveform Viewer</h2>
+<div id="waveformHDL" class="waveform"></div>
+</div>
 </div>
 
 <script>
@@ -293,7 +367,7 @@ tabs.forEach(tab=>{
     });
 });
 
-// Create LED arrays
+// LED Array
 function createLEDs(containerId){
     const container = document.getElementById(containerId);
     container.innerHTML='';
@@ -306,7 +380,7 @@ function createLEDs(containerId){
 }
 ['ledCombinational','ledSequential','ledHDL'].forEach(createLEDs);
 
-// Create 7-segment elements
+// 7-Segment Display
 function createSegments(ids){
     ids.forEach(id=>{
         const container = document.getElementById(id);
@@ -351,9 +425,16 @@ function updateSevenSegment(elementId,value){
     }
 }
 
+// Store waveform history
+let waveformHistory = {
+    combinational: [],
+    sequential: [],
+    hdl: []
+};
+
 // Run HDL Simulation
 function runHDL(tab){
-    let code,A,B,C,D,ledId,highId,lowId,binId,decId,hexId,truthId;
+    let code,A,B,C,D,ledId,highId,lowId,binId,decId,hexId,truthId,waveId;
     if(tab==='combinational'){
         code=document.getElementById('hdlCombinational').value.toUpperCase();
         A=document.getElementById('A1').checked?1:0;
@@ -367,6 +448,7 @@ function runHDL(tab){
         decId='decCombinational';
         hexId='hexCombinational';
         truthId='truthCombinational';
+        waveId='waveformCombinational';
     } else if(tab==='sequential'){
         code=document.getElementById('hdlSequential').value.toUpperCase();
         A=document.getElementById('A2').checked?1:0;
@@ -379,6 +461,8 @@ function runHDL(tab){
         binId='binSequential';
         decId='decSequential';
         hexId='hexSequential';
+        truthId='truthSequential';
+        waveId='waveformSequential';
     } else if(tab==='hdl'){
         code=document.getElementById('hdlLab').value.toUpperCase();
         A=document.getElementById('A3').checked?1:0;
@@ -391,32 +475,45 @@ function runHDL(tab){
         binId='binHDL';
         decId='decHDL';
         hexId='hexHDL';
+        truthId='truthHDL';
+        waveId='waveformHDL';
     }
 
-    // Simple HDL parser for demo
+    // Simple HDL parser
     let OUT=(code.includes('AND')?A&B:(code.includes('OR')?A|B:(code.includes('XOR')?A^B:(code.includes('NOT')?A^1:0))));
+    const bits=[(OUT>>3)&1,(OUT>>2)&1,(OUT>>1)&1,(OUT>>0)&1];
 
-    const outputBits=[(OUT>>3)&1,(OUT>>2)&1,(OUT>>1)&1,(OUT>>0)&1];
+    // LED update
     const leds=document.getElementById(ledId).querySelectorAll('.led');
-    leds.forEach((led,i)=>{
-        if(outputBits[i]) led.classList.add('on');
-        else led.classList.remove('on');
-    });
+    leds.forEach((led,i)=>bits[i]?led.classList.add('on'):led.classList.remove('on'));
 
-    const decimalValue=(outputBits[0]<<3)|(outputBits[1]<<2)|(outputBits[2]<<1)|outputBits[3];
-    document.getElementById(binId).innerText='Binary: '+outputBits.join('');
+    const decimalValue=(bits[0]<<3)|(bits[1]<<2)|(bits[2]<<1)|bits[3];
+    document.getElementById(binId).innerText='Binary: '+bits.join('');
     document.getElementById(decId).innerText='Decimal: '+decimalValue;
     document.getElementById(hexId).innerText='Hex: '+decimalValue.toString(16).toUpperCase();
 
     updateSevenSegment(highId,(decimalValue>>4)&0xF);
     updateSevenSegment(lowId,decimalValue&0xF);
 
-    // Update truth table (combinational only)
+    // Truth table update
     if(truthId){
         const tbody=document.getElementById(truthId).querySelector('tbody');
-        tbody.innerHTML=`<tr><td>${A}</td><td>${B}</td><td>${C}</td><td>${D}</td><td>${outputBits.join('')}</td><td>${decimalValue.toString(16).toUpperCase()}</td></tr>`;
+        tbody.innerHTML=`<tr><td>${A}</td><td>${B}</td><td>${C}</td><td>${D}</td><td>${bits.join('')}</td><td>${decimalValue.toString(16).toUpperCase()}</td></tr>`;
     }
-}
-</script>
-</body>
-</html>
+
+    // Waveform update
+    waveformHistory[tab].push({A,B,C,D,OUT});
+    const waveDiv=document.getElementById(waveId);
+    waveDiv.innerHTML='';
+    ['A','B','C','D','OUT'].forEach(signal=>{
+        const line=document.createElement('div');
+        line.classList.add('waveform-line');
+        line.innerHTML=signal+': ';
+        waveformHistory[tab].forEach(step=>{
+            const b=document.createElement('span');
+            b.classList.add('waveform-bit');
+            b.classList.add(step[signal]? 'on':'off');
+            b.innerText=step[signal];
+            line.appendChild(b);
+        });
+        wave
