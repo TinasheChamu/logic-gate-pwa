@@ -87,12 +87,11 @@ button:hover {background:#1565c0;}
     gap:5px;
 }
 
-/* LED Matrix */
+/* LED Array */
 .led-container {
-    display:grid;
-    grid-template-columns:repeat(8,30px);
+    display:flex;
     justify-content:center;
-    gap:8px;
+    gap:10px;
     margin:20px 0;
 }
 .led {
@@ -117,7 +116,7 @@ button:hover {background:#1565c0;}
     box-shadow:0 0 10px lime;
 }
 
-/* 7-Segment */
+/* 7-Segment Display */
 .seven-segment {
     position:relative;
     width:60px;
@@ -148,12 +147,19 @@ button:hover {background:#1565c0;}
     font-family: monospace;
 }
 
-/* Task instructions */
-.task-content {
+/* Truth Table */
+.truth-table {
+    margin-top:15px;
+    width:100%;
+    border-collapse: collapse;
+}
+.truth-table th, .truth-table td {
+    border:1px solid #555;
+    padding:5px;
+    text-align:center;
+}
+.truth-table th {
     background:#333;
-    border-radius:5px;
-    padding:10px;
-    margin-top:10px;
 }
 </style>
 </head>
@@ -183,7 +189,7 @@ button:hover {background:#1565c0;}
 </div>
 
 <div class="card">
-<h2>LED Matrix</h2>
+<h2>LED Array (Output Bits)</h2>
 <div id="ledCombinational" class="led-container"></div>
 </div>
 
@@ -200,14 +206,12 @@ button:hover {background:#1565c0;}
 </div>
 </div>
 
-<div class="card task-content">
-<h3>Instructions</h3>
-<ul>
-<li>Basic logic gates: AND, OR, NOT, XOR, NAND, NOR</li>
-<li>Half-adder: Inputs A,B → Outputs SUM,CARRY</li>
-<li>Full-adder: Inputs A,B,Cin → Outputs SUM,CARRY</li>
-<li>Multiplexer/Demultiplexer: Inputs + Select → Output</li>
-</ul>
+<div class="card">
+<h3>Truth Table</h3>
+<table class="truth-table" id="truthCombinational">
+<thead><tr><th>A</th><th>B</th><th>C</th><th>D</th><th>OUT</th><th>HEX</th></tr></thead>
+<tbody></tbody>
+</table>
 </div>
 </div>
 
@@ -226,7 +230,7 @@ button:hover {background:#1565c0;}
 </div>
 
 <div class="card">
-<h2>LED Matrix</h2>
+<h2>LED Array (Output Bits)</h2>
 <div id="ledSequential" class="led-container"></div>
 </div>
 
@@ -241,16 +245,6 @@ button:hover {background:#1565c0;}
 <p id="decSequential"></p>
 <p id="hexSequential"></p>
 </div>
-</div>
-
-<div class="card task-content">
-<h3>Instructions</h3>
-<ul>
-<li>SR Flip-Flop: Inputs S,R,Clock → Output Q,Q'</li>
-<li>JK Flip-Flop: Inputs J,K,Clock → Output Q,Q'</li>
-<li>D Flip-Flop: Input D,Clock → Output Q</li>
-<li>4-bit Counter: Clock,Reset → Output LED & 7-segment</li>
-</ul>
 </div>
 </div>
 
@@ -269,7 +263,7 @@ button:hover {background:#1565c0;}
 </div>
 
 <div class="card">
-<h2>LED Matrix</h2>
+<h2>LED Array (Output Bits)</h2>
 <div id="ledHDL" class="led-container"></div>
 </div>
 
@@ -285,19 +279,10 @@ button:hover {background:#1565c0;}
 <p id="hexHDL"></p>
 </div>
 </div>
-
-<div class="card task-content">
-<h3>Instructions</h3>
-<ul>
-<li>Single-line HDL: OUT = A AND B</li>
-<li>Multi-line HDL: SUM = A XOR B, CARRY = A AND B</li>
-<li>HDL Counter: OUT = (OUT + 1) & 0xFF</li>
-</ul>
-</div>
 </div>
 
 <script>
-// Tab switching
+// Tabs
 const tabs = document.querySelectorAll('.tab');
 tabs.forEach(tab=>{
     tab.addEventListener('click',()=>{
@@ -308,10 +293,11 @@ tabs.forEach(tab=>{
     });
 });
 
-// Create LED matrices
+// Create LED arrays
 function createLEDs(containerId){
     const container = document.getElementById(containerId);
-    for(let i=7;i>=0;i--){
+    container.innerHTML='';
+    for(let i=3;i>=0;i--){
         const led = document.createElement('div');
         led.classList.add('led');
         led.setAttribute('data-bit','D'+i);
@@ -324,6 +310,7 @@ function createLEDs(containerId){
 function createSegments(ids){
     ids.forEach(id=>{
         const container = document.getElementById(id);
+        container.innerHTML='';
         ['a','b','c','d','e','f','g'].forEach(seg=>{
             const div = document.createElement('div');
             div.classList.add('segment',seg);
@@ -364,9 +351,9 @@ function updateSevenSegment(elementId,value){
     }
 }
 
-// Run HDL simulation
+// Run HDL Simulation
 function runHDL(tab){
-    let code,A,B,C,D,ledId,highId,lowId,binId,decId,hexId;
+    let code,A,B,C,D,ledId,highId,lowId,binId,decId,hexId,truthId;
     if(tab==='combinational'){
         code=document.getElementById('hdlCombinational').value.toUpperCase();
         A=document.getElementById('A1').checked?1:0;
@@ -379,6 +366,7 @@ function runHDL(tab){
         binId='binCombinational';
         decId='decCombinational';
         hexId='hexCombinational';
+        truthId='truthCombinational';
     } else if(tab==='sequential'){
         code=document.getElementById('hdlSequential').value.toUpperCase();
         A=document.getElementById('A2').checked?1:0;
@@ -405,27 +393,29 @@ function runHDL(tab){
         hexId='hexHDL';
     }
 
-    let result=0;
-    if(code.includes('AND')) result=A&B;
-    else if(code.includes('OR')) result=A|B;
-    else if(code.includes('XOR')) result=A^B;
-    else if(code.includes('NAND')) result=!(A&B)?1:0;
-    else if(code.includes('NOT A')) result=A?0:1;
+    // Simple HDL parser for demo
+    let OUT=(code.includes('AND')?A&B:(code.includes('OR')?A|B:(code.includes('XOR')?A^B:(code.includes('NOT')?A^1:0))));
 
-    const outputByte=Array(8).fill(result).join('');
+    const outputBits=[(OUT>>3)&1,(OUT>>2)&1,(OUT>>1)&1,(OUT>>0)&1];
     const leds=document.getElementById(ledId).querySelectorAll('.led');
     leds.forEach((led,i)=>{
-        if(outputByte[i]==='1') led.classList.add('on');
+        if(outputBits[i]) led.classList.add('on');
         else led.classList.remove('on');
     });
 
-    const decimalValue=parseInt(outputByte,2);
-    document.getElementById(binId).innerText='Binary: '+outputByte;
+    const decimalValue=(outputBits[0]<<3)|(outputBits[1]<<2)|(outputBits[2]<<1)|outputBits[3];
+    document.getElementById(binId).innerText='Binary: '+outputBits.join('');
     document.getElementById(decId).innerText='Decimal: '+decimalValue;
     document.getElementById(hexId).innerText='Hex: '+decimalValue.toString(16).toUpperCase();
 
     updateSevenSegment(highId,(decimalValue>>4)&0xF);
     updateSevenSegment(lowId,decimalValue&0xF);
+
+    // Update truth table (combinational only)
+    if(truthId){
+        const tbody=document.getElementById(truthId).querySelector('tbody');
+        tbody.innerHTML=`<tr><td>${A}</td><td>${B}</td><td>${C}</td><td>${D}</td><td>${outputBits.join('')}</td><td>${decimalValue.toString(16).toUpperCase()}</td></tr>`;
+    }
 }
 </script>
 </body>
