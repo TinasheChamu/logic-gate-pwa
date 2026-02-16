@@ -5,138 +5,161 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FPGA Virtual Digital Lab</title>
 <style>
-/* General body styling */
 body {
-    margin: 0;
+    margin:0;
     font-family: Arial, sans-serif;
-    background-color: #121212;
-    color: #f0f0f0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    background:#121212;
+    color:#f0f0f0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
 }
-
-/* Header */
 header {
-    width: 100%;
-    padding: 20px;
-    background-color: #0d47a1;
-    text-align: center;
-    font-size: 1.8em;
-    font-weight: bold;
+    width:100%;
+    background:#0d47a1;
+    text-align:center;
+    font-size:1.8em;
+    padding:15px 0;
+    font-weight:bold;
 }
 
-/* Container for cards */
+/* Layout container */
 .container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-    padding: 20px;
-    width: 100%;
-    max-width: 1200px;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:20px;
+    padding:20px;
+    width:100%;
+    max-width:1200px;
 }
-
-/* Card style */
 .card {
-    background-color: #1e1e1e;
-    border-radius: 10px;
-    box-shadow: 0 0 15px #000;
-    padding: 20px;
-    flex: 1;
-    min-width: 300px;
-    max-width: 450px;
+    background:#1e1e1e;
+    border-radius:10px;
+    box-shadow:0 0 15px #000;
+    padding:20px;
+    flex:1;
+    min-width:300px;
+    max-width:450px;
 }
-
-/* Card headers */
 .card h2 {
-    margin-top: 0;
-    text-align: center;
-    color: #00bcd4;
+    text-align:center;
+    color:#00bcd4;
+    margin-top:0;
 }
 
-/* Buttons */
+/* HDL Editor */
+textarea {
+    width:100%;
+    border-radius:5px;
+    padding:10px;
+    font-family: monospace;
+    background:#222;
+    color:#f0f0f0;
+    border:1px solid #555;
+}
 button {
-    padding: 10px 15px;
-    margin: 10px 0;
-    border: none;
-    border-radius: 5px;
-    background-color: #0d47a1;
-    color: white;
-    cursor: pointer;
-    font-weight: bold;
+    padding:10px 15px;
+    margin:10px 0;
+    border:none;
+    border-radius:5px;
+    background:#0d47a1;
+    color:white;
+    cursor:pointer;
+    font-weight:bold;
 }
-button:hover {
-    background-color: #1565c0;
-}
+button:hover {background:#1565c0;}
 
-/* Inputs styling */
+/* Switch Inputs */
 .inputs {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin: 10px 0;
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:10px;
+    margin:10px 0;
 }
 .inputs label {
-    display: flex;
-    align-items: center;
-    gap: 5px;
+    display:flex;
+    align-items:center;
+    gap:5px;
 }
 
-/* Textarea */
-textarea {
-    width: 100%;
-    border-radius: 5px;
-    padding: 10px;
-    font-family: monospace;
-    background-color: #222;
-    color: #f0f0f0;
-    border: 1px solid #555;
-}
-
-/* LED Array */
+/* LED Matrix */
 .led-container {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin: 20px 0;
+    display:grid;
+    grid-template-columns: repeat(8, 30px);
+    justify-content:center;
+    gap:8px;
+    margin:20px 0;
 }
 .led {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background-color: #333;
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    background:#333;
     box-shadow: inset 0 0 3px #000;
+    position:relative;
+}
+.led::after {
+    content: attr(data-bit);
+    position:absolute;
+    top:35px;
+    left:50%;
+    transform:translateX(-50%);
+    font-size:12px;
+    color:#ccc;
 }
 .led.on {
-    background-color: lime;
-    box-shadow: 0 0 10px lime;
+    background:lime;
+    box-shadow:0 0 10px lime;
 }
 
-/* 7-Segment Display */
+/* 7-Segment */
 .seven-segment {
-    position: relative;
-    width: 100px;
-    height: 160px;
-    margin: 20px auto;
+    position:relative;
+    width:60px;
+    height:100px;
+    margin:10px;
+    display:inline-block;
 }
 .segment {
-    position: absolute;
-    background-color: #333;
+    position:absolute;
+    background:#333;
 }
 .segment.on {
-    background-color: red;
-    box-shadow: 0 0 8px red;
+    background:red;
+    box-shadow:0 0 6px red;
 }
-.a { top: 0; left: 20px; width: 60px; height: 12px; }
-.b { top: 15px; right: 0; width: 12px; height: 60px; }
-.c { bottom: 15px; right: 0; width: 12px; height: 60px; }
-.d { bottom: 0; left: 20px; width: 60px; height: 12px; }
-.e { bottom: 15px; left: 0; width: 12px; height: 60px; }
-.f { top: 15px; left: 0; width: 12px; height: 60px; }
-.g { top: 74px; left: 20px; width: 60px; height: 12px; }
+.a { top:0; left:15px; width:30px; height:8px;}
+.b { top:8px; right:0; width:8px; height:40px;}
+.c { bottom:8px; right:0; width:8px; height:40px;}
+.d { bottom:0; left:15px; width:30px; height:8px;}
+.e { bottom:8px; left:0; width:8px; height:40px;}
+.f { top:8px; left:0; width:8px; height:40px;}
+.g { top:46px; left:15px; width:30px; height:8px;}
+
+/* Output panel */
+.output-panel {
+    text-align:center;
+    margin-top:10px;
+    font-family: monospace;
+}
+
+/* Tasks Panel */
+.task-section {
+    margin-top:20px;
+}
+.task-section button {
+    width:100%;
+    text-align:left;
+}
+.task-content {
+    display:none;
+    background:#222;
+    border-radius:5px;
+    padding:10px;
+    margin-top:5px;
+}
 </style>
 </head>
 <body>
@@ -147,8 +170,8 @@ textarea {
 
 <!-- HDL Editor -->
 <div class="card">
-<h2>HDL Editor</h2>
-<textarea id="hdlCode" rows="6">OUT = A AND B;</textarea>
+<h2>HDL Editor & Inputs</h2>
+<textarea id="hdlCode" rows="5">OUT = A AND B;</textarea>
 <div class="inputs">
 <label>A <input type="checkbox" id="inputA"></label>
 <label>B <input type="checkbox" id="inputB"></label>
@@ -158,39 +181,76 @@ textarea {
 <button onclick="runHDL()">Run Simulation</button>
 </div>
 
-<!-- LED Output -->
+<!-- LED Matrix -->
 <div class="card">
-<h2>8-Bit LED Output</h2>
+<h2>8-Bit LED Matrix</h2>
 <div id="ledArray" class="led-container"></div>
 </div>
 
-<!-- 7-Segment Display -->
+<!-- 7-Segment Displays -->
 <div class="card">
-<h2>7-Segment Display</h2>
-<div class="seven-segment">
-    <div class="segment a"></div>
-    <div class="segment b"></div>
-    <div class="segment c"></div>
-    <div class="segment d"></div>
-    <div class="segment e"></div>
-    <div class="segment f"></div>
-    <div class="segment g"></div>
+<h2>7-Segment Display (Hex)</h2>
+<div style="display:flex; justify-content:center;">
+<div class="seven-segment" id="highNibble"></div>
+<div class="seven-segment" id="lowNibble"></div>
 </div>
-<p style="text-align:center;">Displays lower 4 bits of LED output</p>
+<div class="output-panel">
+<p id="binOutput"></p>
+<p id="decOutput"></p>
+<p id="hexOutput"></p>
+</div>
+</div>
+
+<!-- Tasks Section -->
+<div class="card">
+<h2>Lab Tasks</h2>
+
+<div class="task-section">
+<button onclick="toggleTask(this)">Combinational Logic Experiments</button>
+<div class="task-content">
+<ul>
+<li>Basic Logic Gates: AND, OR, NOT, XOR, NAND, NOR</li>
+<li>Half-Adder: Inputs A,B → Outputs SUM,CARRY</li>
+<li>Full-Adder: Inputs A,B,Cin → Outputs SUM,CARRY</li>
+<li>Multiplexer/Demultiplexer: Inputs + Select → Output</li>
+</ul>
+</div>
+
+<button onclick="toggleTask(this)">Sequential Logic Experiments</button>
+<div class="task-content">
+<ul>
+<li>SR Flip-Flop: Inputs S,R,Clock → Output Q,Q'</li>
+<li>JK Flip-Flop: Inputs J,K,Clock → Output Q,Q'</li>
+<li>D Flip-Flop: Input D,Clock → Output Q</li>
+<li>4-bit Counter: Clock,Reset → Output LED & 7-segment</li>
+</ul>
+</div>
+
+<button onclick="toggleTask(this)">HDL Exercises</button>
+<div class="task-content">
+<ul>
+<li>Single-line HDL: OUT = A AND B</li>
+<li>Multi-line HDL: SUM = A XOR B, CARRY = A AND B</li>
+<li>HDL Counter: OUT = (OUT + 1) & 0xFF</li>
+</ul>
+</div>
+
+</div>
 </div>
 
 </div>
 
 <script>
-// Create 8 LEDs
+// Create 8 LEDs labeled D7-D0
 const ledContainer = document.getElementById("ledArray");
-for(let i=0;i<8;i++){
+for(let i=7;i>=0;i--){
     const led = document.createElement("div");
     led.classList.add("led");
+    led.setAttribute("data-bit","D"+i);
     ledContainer.appendChild(led);
 }
 
-// 7-segment map
+// 7-segment decoder
 const digitMap = {
     0: ['a','b','c','d','e','f'],
     1: ['b','c'],
@@ -201,13 +261,23 @@ const digitMap = {
     6: ['a','f','g','e','c','d'],
     7: ['a','b','c'],
     8: ['a','b','c','d','e','f','g'],
-    9: ['a','b','c','d','f','g']
+    9: ['a','b','c','d','f','g'],
+    10: ['a','b','c','e','f','g'], // A
+    11: ['f','e','g','c','d'],     // B
+    12: ['a','f','e','d'],         // C
+    13: ['b','c','g','e','d'],     // D
+    14: ['a','f','g','e','d'],     // E
+    15: ['a','f','g','e']          // F
 };
-function updateSevenSegment(value){
-    const segments = document.querySelectorAll(".segment");
-    segments.forEach(s => s.classList.remove("on"));
+
+function updateSevenSegment(elementId,value){
+    const segments = document.getElementById(elementId).querySelectorAll('.segment');
+    segments.forEach(s=>s.classList.remove('on'));
     if(digitMap[value]){
-        digitMap[value].forEach(s => document.querySelector("."+s).classList.add("on"));
+        digitMap[value].forEach(s=>{
+            const seg = document.getElementById(elementId).querySelector('.'+s);
+            if(seg) seg.classList.add('on');
+        });
     }
 }
 
@@ -219,26 +289,49 @@ function runHDL(){
     const C = document.getElementById("inputC").checked?1:0;
     const D = document.getElementById("inputD").checked?1:0;
 
-    let result = 0;
-    if(code.includes("AND")) result = A & B;
-    else if(code.includes("OR")) result = A | B;
-    else if(code.includes("XOR")) result = A ^ B;
-    else if(code.includes("NAND")) result = !(A & B)?1:0;
-    else if(code.includes("NOT A")) result = A?0:1;
+    let result=0;
+    if(code.includes("AND")) result=A&B;
+    else if(code.includes("OR")) result=A|B;
+    else if(code.includes("XOR")) result=A^B;
+    else if(code.includes("NAND")) result=!(A&B)?1:0;
+    else if(code.includes("NOT A")) result=A?0:1;
 
-    // 8-bit LED output
+    // 8-bit output (for demo, replicate result)
     const outputByte = Array(8).fill(result).join('');
-    const leds = document.querySelectorAll(".led");
+    const leds = document.querySelectorAll('.led');
     for(let i=0;i<8;i++){
-        if(outputByte[i]==="1") leds[i].classList.add("on");
-        else leds[i].classList.remove("on");
+        if(outputByte[i]==='1') leds[i].classList.add('on');
+        else leds[i].classList.remove('on');
     }
 
-    // 7-segment lower 4 bits
-    const lowerNibble = parseInt(outputByte.slice(4),2);
-    updateSevenSegment(lowerNibble);
-}
-</script>
+    // Display binary, decimal, hex
+    const decimalValue = parseInt(outputByte,2);
+    document.getElementById('binOutput').innerText = 'Binary: '+outputByte;
+    document.getElementById('decOutput').innerText = 'Decimal: '+decimalValue;
+    document.getElementById('hexOutput').innerText = 'Hex: '+decimalValue.toString(16).toUpperCase();
 
+    // 7-segment high & low nibbles
+    const highNibble = (decimalValue >> 4)&0xF;
+    const lowNibble = decimalValue &0xF;
+    updateSevenSegment('highNibble',highNibble);
+    updateSevenSegment('lowNibble',lowNibble);
+}
+
+// Task collapsible
+function toggleTask(btn){
+    const content = btn.nextElementSibling;
+    content.style.display = content.style.display==='block'?'none':'block';
+}
+
+// Initialize empty 7-segment elements
+['highNibble','lowNibble'].forEach(id=>{
+    const container = document.getElementById(id);
+    ['a','b','c','d','e','f','g'].forEach(seg=>{
+        const div = document.createElement('div');
+        div.classList.add('segment',seg);
+        container.appendChild(div);
+    });
+});
+</script>
 </body>
 </html>
