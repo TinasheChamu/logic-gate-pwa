@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <title>Undergraduate Digital Electronics Laboratory</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="manifest" href="manifest.json">
 
 <style>
 body{
@@ -68,6 +67,7 @@ nav button:hover{
 table{
   width:100%;
   border-collapse:collapse;
+  margin-top:8px;
 }
 
 th,td{
@@ -95,8 +95,9 @@ th,td{
 
 <!-- LOGIC GATES -->
 <div id="logic" class="section active">
+
 <div class="card">
-<h3>Combinational Logic</h3>
+<h3>Combinational Logic Experiment</h3>
 A <select id="A"><option>0</option><option>1</option></select>
 B <select id="B"><option>0</option><option>1</option></select>
 
@@ -115,10 +116,25 @@ Gate
 <div id="logicLED" class="led red"></div>
 <h4 id="logicOut">Output: 0</h4>
 </div>
+
+<div class="card">
+<h3>Experiment Map</h3>
+<p><b>Objective:</b> Understand Boolean implementation of combinational circuits.</p>
+<p><b>Concept Flow:</b> Inputs → Boolean Operator → Truth Table → Output LED</p>
+
+<table>
+<tr><th>Signal</th><th>FPGA Pin</th></tr>
+<tr><td>A</td><td>PIN_1</td></tr>
+<tr><td>B</td><td>PIN_2</td></tr>
+<tr><td>Output</td><td>PIN_10</td></tr>
+</table>
+</div>
+
 </div>
 
 <!-- FLIP FLOP -->
 <div id="flipflop" class="section">
+
 <div class="card">
 <h3>SR Flip-Flop</h3>
 S <select id="S"><option>0</option><option>1</option></select>
@@ -128,30 +144,74 @@ R <select id="R"><option>0</option><option>1</option></select>
 <div id="ffLED" class="led red"></div>
 <h4 id="ffOut">Q: 0</h4>
 </div>
+
+<div class="card">
+<h3>Experiment Map</h3>
+<p><b>Objective:</b> Understand bistable sequential memory behaviour.</p>
+<p><b>Concept Flow:</b> S,R → NOR Latch → Q,Q̅ → State Retention</p>
+
+<table>
+<tr><th>Signal</th><th>FPGA Pin</th></tr>
+<tr><td>S</td><td>PIN_3</td></tr>
+<tr><td>R</td><td>PIN_4</td></tr>
+<tr><td>Q</td><td>PIN_11</td></tr>
+</table>
+</div>
+
 </div>
 
 <!-- COUNTER -->
 <div id="counter" class="section">
+
 <div class="card">
 <h3>4-bit Binary Counter</h3>
 <button onclick="startCounter()">Start</button>
 <button onclick="stopCounter()">Stop</button>
 <h2 id="counterDisplay">0000</h2>
 </div>
+
+<div class="card">
+<h3>Experiment Map</h3>
+<p><b>Objective:</b> Understand clock-driven synchronous counting.</p>
+<p><b>Concept Flow:</b> Clock → Flip-Flops → Binary Output</p>
+
+<table>
+<tr><th>Bit</th><th>FPGA Pin</th></tr>
+<tr><td>Q0</td><td>PIN_20</td></tr>
+<tr><td>Q1</td><td>PIN_21</td></tr>
+<tr><td>Q2</td><td>PIN_22</td></tr>
+<tr><td>Q3</td><td>PIN_23</td></tr>
+</table>
+</div>
+
 </div>
 
 <!-- SHIFT REGISTER -->
 <div id="shift" class="section">
+
 <div class="card">
 <h3>4-bit Shift Register</h3>
 <input type="number" id="shiftInput" min="0" max="1" value="0">
 <button onclick="shift()">Shift</button>
 <h2 id="shiftDisplay">0000</h2>
 </div>
+
+<div class="card">
+<h3>Experiment Map</h3>
+<p><b>Objective:</b> Understand serial data shifting and storage.</p>
+
+<table>
+<tr><th>Signal</th><th>FPGA Pin</th></tr>
+<tr><td>Serial In</td><td>PIN_6</td></tr>
+<tr><td>Q0–Q3</td><td>PIN_30–33</td></tr>
+</table>
+</div>
+
 </div>
 
 <!-- MULTIPLEXER -->
 <div id="mux" class="section">
+
 <div class="card">
 <h3>2:1 Multiplexer</h3>
 D0 <select id="D0"><option>0</option><option>1</option></select>
@@ -162,16 +222,42 @@ Select <select id="SEL"><option>0</option><option>1</option></select>
 <div id="muxLED" class="led red"></div>
 <h4 id="muxOut">Output: 0</h4>
 </div>
+
+<div class="card">
+<h3>Experiment Map</h3>
+<p><b>Objective:</b> Understand digital data selection.</p>
+
+<table>
+<tr><th>Signal</th><th>FPGA Pin</th></tr>
+<tr><td>D0</td><td>PIN_7</td></tr>
+<tr><td>D1</td><td>PIN_8</td></tr>
+<tr><td>SEL</td><td>PIN_9</td></tr>
+<tr><td>Output</td><td>PIN_15</td></tr>
+</table>
+</div>
+
 </div>
 
 <!-- WAVEFORM -->
 <div id="wave" class="section">
+
 <div class="card">
 <h3>Clock Waveform</h3>
 <button onclick="startWave()">Start</button>
 <button onclick="stopWave()">Stop</button>
 <h3 id="waveDisplay">0</h3>
 </div>
+
+<div class="card">
+<h3>Experiment Map</h3>
+<p><b>Objective:</b> Understand digital clock and timing signals.</p>
+
+<table>
+<tr><th>Signal</th><th>FPGA Pin</th></tr>
+<tr><td>Clock</td><td>PIN_5</td></tr>
+</table>
+</div>
+
 </div>
 
 <script>
@@ -193,14 +279,12 @@ let a=+A.value;
 let b=+B.value;
 let g=gate.value;
 let r=0;
-
 if(g=="AND") r=a&b;
 if(g=="OR") r=a|b;
 if(g=="XOR") r=a^b;
 if(g=="NAND") r=!(a&b)?1:0;
 if(g=="NOR") r=!(a|b)?1:0;
 if(g=="XNOR") r=!(a^b)?1:0;
-
 logicLED.className="led "+(r?"green":"red");
 logicOut.innerText="Output: "+r;
 }
@@ -211,7 +295,6 @@ let r=+R.value;
 if(s==1&&r==0) Q=1;
 if(s==0&&r==1) Q=0;
 if(s==1&&r==1) Q="Invalid";
-
 if(Q==="Invalid"){
 ffLED.className="led red";
 ffOut.innerText="Invalid";
@@ -228,9 +311,7 @@ counterDisplay.innerText=counter.toString(2).padStart(4,'0');
 },500);
 }
 
-function stopCounter(){
-clearInterval(counterInt);
-}
+function stopCounter(){ clearInterval(counterInt); }
 
 function shift(){
 let val=+shiftInput.value;
@@ -255,13 +336,7 @@ waveDisplay.innerText=waveVal;
 },500);
 }
 
-function stopWave(){
-clearInterval(waveInt);
-}
-
-if ('serviceWorker' in navigator) {
-navigator.serviceWorker.register('service-worker.js');
-}
+function stopWave(){ clearInterval(waveInt); }
 
 </script>
 
