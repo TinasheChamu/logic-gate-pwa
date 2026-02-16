@@ -5,515 +5,277 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FPGA Virtual Digital Lab</title>
 <style>
-body {
-    margin:0;
-    font-family: Arial, sans-serif;
-    background:#121212;
-    color:#f0f0f0;
-}
-header {
-    width:100%;
-    background:#0d47a1;
-    text-align:center;
-    font-size:1.8em;
-    padding:15px 0;
-    font-weight:bold;
-}
-
-/* Tabs */
-.tab-container {
-    display:flex;
-    justify-content:center;
-    margin-top:15px;
-    flex-wrap:wrap;
-}
-.tab {
-    padding:10px 20px;
-    margin:2px;
-    cursor:pointer;
-    border-radius:5px 5px 0 0;
-    background:#333;
-}
-.tab.active {
-    background:#0d47a1;
-}
-
-/* Tab content */
-.tab-content {
-    display:none;
-    background:#1e1e1e;
-    padding:20px;
-    border-radius:0 10px 10px 10px;
-    max-width:1000px;
-    margin:0 auto 20px auto;
-}
-
-/* Cards inside tab */
-.card {
-    background:#222;
-    border-radius:10px;
-    padding:15px;
-    margin-bottom:20px;
-}
-.card h2 {
-    text-align:center;
-    color:#00bcd4;
-}
-
-/* Layout for editor + truth table */
-.editor-container {
-    display:flex;
-    flex-wrap:wrap;
-    gap:20px;
-    justify-content:center;
-}
-.editor-card, .truth-card {
-    flex:1;
-    min-width:280px;
-}
-
-/* Buttons */
-button {
-    padding:10px 15px;
-    border:none;
-    border-radius:5px;
-    background:#0d47a1;
-    color:white;
-    cursor:pointer;
-    font-weight:bold;
-    margin-top:10px;
-}
+body {margin:0; font-family:Arial,sans-serif; background:#121212; color:#f0f0f0;}
+header {width:100%; background:#0d47a1; text-align:center; font-size:1.8em; padding:15px 0; font-weight:bold;}
+.tab-container {display:flex; justify-content:center; margin-top:15px; flex-wrap:wrap;}
+.tab {padding:10px 20px; margin:2px; cursor:pointer; border-radius:5px 5px 0 0; background:#333;}
+.tab.active {background:#0d47a1;}
+.tab-content {display:none; background:#1e1e1e; padding:20px; border-radius:0 10px 10px 10px; max-width:1000px; margin:0 auto 20px auto;}
+.card {background:#222; border-radius:10px; padding:15px; margin-bottom:20px;}
+.card h2 {text-align:center; color:#00bcd4;}
+.editor-container {display:flex; flex-wrap:wrap; gap:20px; justify-content:center;}
+.editor-card, .truth-card {flex:1; min-width:280px;}
+button {padding:10px 15px; border:none; border-radius:5px; background:#0d47a1; color:white; cursor:pointer; font-weight:bold; margin-top:10px;}
 button:hover {background:#1565c0;}
-
-/* Inputs */
-.inputs {
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-    justify-content:center;
-    margin:10px 0;
-}
-.inputs label {
-    display:flex;
-    align-items:center;
-    gap:5px;
-}
-
-/* LED Array */
-.led-container {
-    display:flex;
-    justify-content:center;
-    gap:10px;
-    margin:20px 0;
-}
-.led {
-    width:30px;
-    height:30px;
-    border-radius:50%;
-    background:#333;
-    box-shadow:inset 0 0 3px #000;
-    position:relative;
-}
-.led::after {
-    content: attr(data-bit);
-    position:absolute;
-    top:35px;
-    left:50%;
-    transform:translateX(-50%);
-    font-size:12px;
-    color:#ccc;
-}
-.led.on {
-    background:lime;
-    box-shadow:0 0 10px lime;
-}
-
-/* 7-Segment Display */
-.seven-segment {
-    position:relative;
-    width:60px;
-    height:100px;
-    display:inline-block;
-    margin:10px;
-}
-.segment {
-    position:absolute;
-    background:#333;
-}
-.segment.on {
-    background:red;
-    box-shadow:0 0 6px red;
-}
-.a { top:0; left:15px; width:30px; height:8px;}
-.b { top:8px; right:0; width:8px; height:40px;}
-.c { bottom:8px; right:0; width:8px; height:40px;}
-.d { bottom:0; left:15px; width:30px; height:8px;}
-.e { bottom:8px; left:0; width:8px; height:40px;}
-.f { top:8px; left:0; width:8px; height:40px;}
-.g { top:46px; left:15px; width:30px; height:8px;}
-
-/* Output panel */
-.output-panel {
-    text-align:center;
-    margin-top:10px;
-    font-family: monospace;
-}
-
-/* Truth Table */
-.truth-table {
-    margin-top:15px;
-    width:100%;
-    border-collapse: collapse;
-}
-.truth-table th, .truth-table td {
-    border:1px solid #555;
-    padding:5px;
-    text-align:center;
-}
-.truth-table th {
-    background:#333;
-}
-
-/* Waveform Viewer */
-.waveform {
-    background:#222;
-    border-radius:10px;
-    padding:10px;
-    overflow-x:auto;
-    white-space:nowrap;
-    font-family: monospace;
-}
-.waveform-line {
-    margin:3px 0;
-}
-.waveform-bit {
-    display:inline-block;
-    width:20px;
-    text-align:center;
-}
-.waveform-bit.on {
-    color:lime;
-    font-weight:bold;
-}
-.waveform-bit.off {
-    color:#555;
-}
+.inputs {display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin:10px 0;}
+.inputs label {display:flex; align-items:center; gap:5px;}
+.led-container {display:flex; justify-content:center; gap:10px; margin:20px 0;}
+.led {width:30px; height:30px; border-radius:50%; background:#333; box-shadow:inset 0 0 3px #000; position:relative;}
+.led::after {content: attr(data-bit); position:absolute; top:35px; left:50%; transform:translateX(-50%); font-size:12px; color:#ccc;}
+.led.on {background:lime; box-shadow:0 0 10px lime;}
+.seven-segment {position:relative; width:60px; height:100px; display:inline-block; margin:10px;}
+.segment {position:absolute; background:#333;}
+.segment.on {background:red; box-shadow:0 0 6px red;}
+.a {top:0; left:15px; width:30px; height:8px;}
+.b {top:8px; right:0; width:8px; height:40px;}
+.c {bottom:8px; right:0; width:8px; height:40px;}
+.d {bottom:0; left:15px; width:30px; height:8px;}
+.e {bottom:8px; left:0; width:8px; height:40px;}
+.f {top:8px; left:0; width:8px; height:40px;}
+.g {top:46px; left:15px; width:30px; height:8px;}
+.output-panel {text-align:center; margin-top:10px; font-family: monospace;}
+.truth-table {margin-top:15px; width:100%; border-collapse: collapse;}
+.truth-table th, .truth-table td {border:1px solid #555; padding:5px; text-align:center;}
+.truth-table th {background:#333;}
+.waveform {background:#222; border-radius:10px; padding:10px; overflow-x:auto; white-space:nowrap; font-family: monospace; max-height:150px;}
+.waveform-line {margin:3px 0;}
+.waveform-bit {display:inline-block; width:20px; text-align:center;}
+.waveform-bit.on {color:lime; font-weight:bold;}
+.waveform-bit.off {color:#555;}
 </style>
 </head>
 <body>
 
 <header>FPGA Virtual Digital Electronics Lab</header>
 
-<!-- Tabs -->
 <div class="tab-container">
-    <div class="tab active" data-tab="combinational">Combinational Logic</div>
-    <div class="tab" data-tab="sequential">Sequential Logic</div>
-    <div class="tab" data-tab="hdl">HDL Exercises</div>
+  <div class="tab active" data-tab="combinational">Combinational Logic</div>
+  <div class="tab" data-tab="sequential">Sequential Logic</div>
+  <div class="tab" data-tab="hdl">HDL Exercises</div>
 </div>
 
 <!-- Combinational Tab -->
 <div class="tab-content" id="combinational" style="display:block;">
-<div class="editor-container">
-<div class="card editor-card">
-<h2>HDL Editor</h2>
-<textarea id="hdlCombinational" rows="5" style="width:100%">OUT = A AND B;</textarea>
-<div class="inputs">
-<label>A <input type="checkbox" id="A1"></label>
-<label>B <input type="checkbox" id="B1"></label>
-<label>C <input type="checkbox" id="C1"></label>
-<label>D <input type="checkbox" id="D1"></label>
-</div>
-<button onclick="runHDL('combinational')">Run Simulation</button>
-</div>
-
-<div class="card truth-card">
-<h2>Truth Table</h2>
-<table class="truth-table" id="truthCombinational">
-<thead><tr><th>A</th><th>B</th><th>C</th><th>D</th><th>OUT</th><th>HEX</th></tr></thead>
-<tbody></tbody>
-</table>
-</div>
-</div>
-
-<div class="card">
-<h2>LED Array</h2>
-<div id="ledCombinational" class="led-container"></div>
-</div>
-
-<div class="card">
-<h2>7-Segment Display</h2>
-<div style="text-align:center;">
-<div class="seven-segment" id="highCombinational"></div>
-<div class="seven-segment" id="lowCombinational"></div>
-</div>
-<div class="output-panel">
-<p id="binCombinational"></p>
-<p id="decCombinational"></p>
-<p id="hexCombinational"></p>
-</div>
-</div>
-
-<div class="card">
-<h2>Waveform Viewer</h2>
-<div id="waveformCombinational" class="waveform"></div>
-</div>
+  <div class="card">
+    <h2>Basic Gates Simulation</h2>
+    <div class="inputs">
+      <label>A <input type="checkbox" id="A_c"></label>
+      <label>B <input type="checkbox" id="B_c"></label>
+    </div>
+    <button onclick="runCombinational()">Run Simulation</button>
+  </div>
+  <div class="card">
+    <h2>Truth Table</h2>
+    <table class="truth-table" id="truthCombinational">
+      <thead><tr><th>A</th><th>B</th><th>AND</th><th>OR</th><th>XOR</th><th>NAND</th><th>NOT A</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <div class="card">
+    <h2>LED Array</h2>
+    <div id="ledCombinational" class="led-container"></div>
+  </div>
+  <div class="card">
+    <h2>7-Segment Display</h2>
+    <div style="text-align:center;">
+      <div class="seven-segment" id="highCombinational"></div>
+      <div class="seven-segment" id="lowCombinational"></div>
+    </div>
+    <div class="output-panel">
+      <p id="binCombinational"></p>
+      <p id="decCombinational"></p>
+      <p id="hexCombinational"></p>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Waveform Viewer</h2>
+    <div id="waveformCombinational" class="waveform"></div>
+  </div>
 </div>
 
 <!-- Sequential Tab -->
 <div class="tab-content" id="sequential">
-<div class="editor-container">
-<div class="card editor-card">
-<h2>HDL Editor</h2>
-<textarea id="hdlSequential" rows="5" style="width:100%">OUT = A AND B;</textarea>
-<div class="inputs">
-<label>A <input type="checkbox" id="A2"></label>
-<label>B <input type="checkbox" id="B2"></label>
-<label>C <input type="checkbox" id="C2"></label>
-<label>D <input type="checkbox" id="D2"></label>
-</div>
-<button onclick="runHDL('sequential')">Run Simulation</button>
-</div>
-
-<div class="card truth-card">
-<h2>Truth Table</h2>
-<table class="truth-table" id="truthSequential">
-<thead><tr><th>A</th><th>B</th><th>C</th><th>D</th><th>OUT</th><th>HEX</th></tr></thead>
-<tbody></tbody>
-</table>
-</div>
-</div>
-
-<div class="card">
-<h2>LED Array</h2>
-<div id="ledSequential" class="led-container"></div>
-</div>
-
-<div class="card">
-<h2>7-Segment Display</h2>
-<div style="text-align:center;">
-<div class="seven-segment" id="highSequential"></div>
-<div class="seven-segment" id="lowSequential"></div>
-</div>
-<div class="output-panel">
-<p id="binSequential"></p>
-<p id="decSequential"></p>
-<p id="hexSequential"></p>
-</div>
-</div>
-
-<div class="card">
-<h2>Waveform Viewer</h2>
-<div id="waveformSequential" class="waveform"></div>
-</div>
+  <div class="card">
+    <h2>Simple 4-bit Counter</h2>
+    <button onclick="runSequential()">Increment Counter</button>
+  </div>
+  <div class="card">
+    <h2>Truth Table</h2>
+    <table class="truth-table" id="truthSequential">
+      <thead><tr><th>CLK</th><th>OUT[3]</th><th>OUT[2]</th><th>OUT[1]</th><th>OUT[0]</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <div class="card">
+    <h2>LED Array</h2>
+    <div id="ledSequential" class="led-container"></div>
+  </div>
+  <div class="card">
+    <h2>7-Segment Display</h2>
+    <div style="text-align:center;">
+      <div class="seven-segment" id="highSequential"></div>
+      <div class="seven-segment" id="lowSequential"></div>
+    </div>
+    <div class="output-panel">
+      <p id="binSequential"></p>
+      <p id="decSequential"></p>
+      <p id="hexSequential"></p>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Waveform Viewer</h2>
+    <div id="waveformSequential" class="waveform"></div>
+  </div>
 </div>
 
 <!-- HDL Tab -->
 <div class="tab-content" id="hdl">
-<div class="editor-container">
-<div class="card editor-card">
-<h2>HDL Editor</h2>
-<textarea id="hdlLab" rows="5" style="width:100%">OUT = A AND B;</textarea>
-<div class="inputs">
-<label>A <input type="checkbox" id="A3"></label>
-<label>B <input type="checkbox" id="B3"></label>
-<label>C <input type="checkbox" id="C3"></label>
-<label>D <input type="checkbox" id="D3"></label>
-</div>
-<button onclick="runHDL('hdl')">Run Simulation</button>
-</div>
-
-<div class="card truth-card">
-<h2>Truth Table</h2>
-<table class="truth-table" id="truthHDL">
-<thead><tr><th>A</th><th>B</th><th>C</th><th>D</th><th>OUT</th><th>HEX</th></tr></thead>
-<tbody></tbody>
-</table>
-</div>
-</div>
-
-<div class="card">
-<h2>LED Array</h2>
-<div id="ledHDL" class="led-container"></div>
-</div>
-
-<div class="card">
-<h2>7-Segment Display</h2>
-<div style="text-align:center;">
-<div class="seven-segment" id="highHDL"></div>
-<div class="seven-segment" id="lowHDL"></div>
-</div>
-<div class="output-panel">
-<p id="binHDL"></p>
-<p id="decHDL"></p>
-<p id="hexHDL"></p>
-</div>
-</div>
-
-<div class="card">
-<h2>Waveform Viewer</h2>
-<div id="waveformHDL" class="waveform"></div>
-</div>
+  <div class="editor-container">
+    <div class="card editor-card">
+      <h2>HDL Editor</h2>
+      <textarea id="hdlLab" rows="5" style="width:100%">OUT = A AND B;</textarea>
+      <div class="inputs">
+        <label>A <input type="checkbox" id="A_h"></label>
+        <label>B <input type="checkbox" id="B_h"></label>
+        <label>C <input type="checkbox" id="C_h"></label>
+        <label>D <input type="checkbox" id="D_h"></label>
+      </div>
+      <button onclick="runHDL()">Run Simulation</button>
+    </div>
+    <div class="card truth-card">
+      <h2>Truth Table</h2>
+      <table class="truth-table" id="truthHDL">
+        <thead><tr><th>A</th><th>B</th><th>C</th><th>D</th><th>OUT</th><th>HEX</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card">
+    <h2>LED Array</h2>
+    <div id="ledHDL" class="led-container"></div>
+  </div>
+  <div class="card">
+    <h2>7-Segment Display</h2>
+    <div style="text-align:center;">
+      <div class="seven-segment" id="highHDL"></div>
+      <div class="seven-segment" id="lowHDL"></div>
+    </div>
+    <div class="output-panel">
+      <p id="binHDL"></p>
+      <p id="decHDL"></p>
+      <p id="hexHDL"></p>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Waveform Viewer</h2>
+    <div id="waveformHDL" class="waveform"></div>
+  </div>
 </div>
 
 <script>
 // Tabs
-const tabs = document.querySelectorAll('.tab');
+const tabs=document.querySelectorAll('.tab');
 tabs.forEach(tab=>{
-    tab.addEventListener('click',()=>{
-        tabs.forEach(t=>t.classList.remove('active'));
-        tab.classList.add('active');
-        document.querySelectorAll('.tab-content').forEach(c=>c.style.display='none');
-        document.getElementById(tab.getAttribute('data-tab')).style.display='block';
-    });
+  tab.addEventListener('click',()=>{
+    tabs.forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelectorAll('.tab-content').forEach(c=>c.style.display='none');
+    document.getElementById(tab.getAttribute('data-tab')).style.display='block';
+  });
 });
 
-// LED Array
+// LED & 7-segment helpers
 function createLEDs(containerId){
-    const container = document.getElementById(containerId);
-    container.innerHTML='';
-    for(let i=3;i>=0;i--){
-        const led = document.createElement('div');
-        led.classList.add('led');
-        led.setAttribute('data-bit','D'+i);
-        container.appendChild(led);
-    }
+  const container=document.getElementById(containerId); container.innerHTML='';
+  for(let i=3;i>=0;i--){
+    const led=document.createElement('div'); led.classList.add('led'); led.setAttribute('data-bit','D'+i);
+    container.appendChild(led);
+  }
 }
-['ledCombinational','ledSequential','ledHDL'].forEach(createLEDs);
-
-// 7-Segment Display
 function createSegments(ids){
-    ids.forEach(id=>{
-        const container = document.getElementById(id);
-        container.innerHTML='';
-        ['a','b','c','d','e','f','g'].forEach(seg=>{
-            const div = document.createElement('div');
-            div.classList.add('segment',seg);
-            container.appendChild(div);
-        });
+  ids.forEach(id=>{
+    const container=document.getElementById(id); container.innerHTML='';
+    ['a','b','c','d','e','f','g'].forEach(seg=>{
+      const s=document.createElement('div'); s.classList.add('segment',seg); container.appendChild(s);
     });
+  });
 }
+const digitMap={0:['a','b','c','d','e','f'],1:['b','c'],2:['a','b','g','e','d'],3:['a','b','g','c','d'],4:['f','g','b','c'],5:['a','f','g','c','d'],6:['a','f','g','e','c','d'],7:['a','b','c'],8:['a','b','c','d','e','f','g'],9:['a','b','c','d','f','g'],10:['a','b','c','e','f','g'],11:['f','e','g','c','d'],12:['a','f','e','d'],13:['b','c','g','e','d'],14:['a','f','g','e','d'],15:['a','f','g','e']};
+function updateSevenSegment(id,value){const segs=document.getElementById(id).querySelectorAll('.segment');segs.forEach(s=>s.classList.remove('on'));if(digitMap[value]) digitMap[value].forEach(s=>{const seg=document.getElementById(id).querySelector('.'+s); if(seg) seg.classList.add('on');});}
+
+// Initialize
+['ledCombinational','ledSequential','ledHDL'].forEach(createLEDs);
 createSegments(['highCombinational','lowCombinational','highSequential','lowSequential','highHDL','lowHDL']);
 
-// 7-segment map
-const digitMap = {
-    0: ['a','b','c','d','e','f'],
-    1: ['b','c'],
-    2: ['a','b','g','e','d'],
-    3: ['a','b','g','c','d'],
-    4: ['f','g','b','c'],
-    5: ['a','f','g','c','d'],
-    6: ['a','f','g','e','c','d'],
-    7: ['a','b','c'],
-    8: ['a','b','c','d','e','f','g'],
-    9: ['a','b','c','d','f','g'],
-    10:['a','b','c','e','f','g'],
-    11:['f','e','g','c','d'],
-    12:['a','f','e','d'],
-    13:['b','c','g','e','d'],
-    14:['a','f','g','e','d'],
-    15:['a','f','g','e']
-};
-
-function updateSevenSegment(elementId,value){
-    const segments = document.getElementById(elementId).querySelectorAll('.segment');
-    segments.forEach(s=>s.classList.remove('on'));
-    if(digitMap[value]){
-        digitMap[value].forEach(s=>{
-            const seg = document.getElementById(elementId).querySelector('.'+s);
-            if(seg) seg.classList.add('on');
-        });
-    }
+// Waveform
+let waveform_c=[],waveform_s=[],waveform_h=[];
+function renderWaveform(arr,containerId){
+  const div=document.getElementById(containerId); div.innerHTML='';
+  ['A','B','C','D','OUT'].forEach(sig=>{
+    const line=document.createElement('div'); line.classList.add('waveform-line'); line.textContent=sig+': ';
+    arr.forEach(step=>{const b=document.createElement('span'); b.classList.add('waveform-bit'); b.classList.add(step[sig]? 'on':'off'); b.textContent=step[sig]; line.appendChild(b);});
+    div.appendChild(line);
+  });
 }
 
-// Store waveform history
-let waveformHistory = {
-    combinational: [],
-    sequential: [],
-    hdl: []
-};
+// Combinational
+function runCombinational(){
+  const A=document.getElementById('A_c').checked?1:0;
+  const B=document.getElementById('B_c').checked?1:0;
+  const AND=A&B, OR=A|B, XOR=A^B, NAND=(A&B)^1, NOTA=A^1;
+  // Truth table
+  const tbody=document.getElementById('truthCombinational').querySelector('tbody');
+  tbody.innerHTML=`<tr><td>${A}</td><td>${B}</td><td>${AND}</td><td>${OR}</td><td>${XOR}</td><td>${NAND}</td><td>${NOTA}</td></tr>`;
+  // LEDs
+  const bits=[AND,OR,XOR,NAND]; // show four gates
+  const leds=document.getElementById('ledCombinational').querySelectorAll('.led');
+  leds.forEach((l,i)=>bits[i]?l.classList.add('on'):l.classList.remove('on'));
+  // 7-segment (decimal 0-15)
+  let val=(AND<<3)|(OR<<2)|(XOR<<1)|NAND;
+  document.getElementById('binCombinational').textContent='Binary: '+bits.join('');
+  document.getElementById('decCombinational').textContent='Decimal: '+val;
+  document.getElementById('hexCombinational').textContent='Hex: '+val.toString(16).toUpperCase();
+  updateSevenSegment('highCombinational',(val>>4)&0xF); updateSevenSegment('lowCombinational',val&0xF);
+  waveform_c.push({A,B,C:0,D:0,OUT:val}); renderWaveform(waveform_c,'waveformCombinational');
+}
 
-// Run HDL Simulation
-function runHDL(tab){
-    let code,A,B,C,D,ledId,highId,lowId,binId,decId,hexId,truthId,waveId;
-    if(tab==='combinational'){
-        code=document.getElementById('hdlCombinational').value.toUpperCase();
-        A=document.getElementById('A1').checked?1:0;
-        B=document.getElementById('B1').checked?1:0;
-        C=document.getElementById('C1').checked?1:0;
-        D=document.getElementById('D1').checked?1:0;
-        ledId='ledCombinational';
-        highId='highCombinational';
-        lowId='lowCombinational';
-        binId='binCombinational';
-        decId='decCombinational';
-        hexId='hexCombinational';
-        truthId='truthCombinational';
-        waveId='waveformCombinational';
-    } else if(tab==='sequential'){
-        code=document.getElementById('hdlSequential').value.toUpperCase();
-        A=document.getElementById('A2').checked?1:0;
-        B=document.getElementById('B2').checked?1:0;
-        C=document.getElementById('C2').checked?1:0;
-        D=document.getElementById('D2').checked?1:0;
-        ledId='ledSequential';
-        highId='highSequential';
-        lowId='lowSequential';
-        binId='binSequential';
-        decId='decSequential';
-        hexId='hexSequential';
-        truthId='truthSequential';
-        waveId='waveformSequential';
-    } else if(tab==='hdl'){
-        code=document.getElementById('hdlLab').value.toUpperCase();
-        A=document.getElementById('A3').checked?1:0;
-        B=document.getElementById('B3').checked?1:0;
-        C=document.getElementById('C3').checked?1:0;
-        D=document.getElementById('D3').checked?1:0;
-        ledId='ledHDL';
-        highId='highHDL';
-        lowId='lowHDL';
-        binId='binHDL';
-        decId='decHDL';
-        hexId='hexHDL';
-        truthId='truthHDL';
-        waveId='waveformHDL';
-    }
+// Sequential Counter
+let counter=0;
+function runSequential(){
+  counter=(counter+1)&0xF;
+  const bits=[(counter>>3)&1,(counter>>2)&1,(counter>>1)&1,(counter>>0)&1];
+  const tbody=document.getElementById('truthSequential').querySelector('tbody');
+  tbody.innerHTML=`<tr><td>${1}</td><td>${bits[0]}</td><td>${bits[1]}</td><td>${bits[2]}</td><td>${bits[3]}</td></tr>`;
+  // LEDs
+  const leds=document.getElementById('ledSequential').querySelectorAll('.led');
+  leds.forEach((l,i)=>bits[i]?l.classList.add('on'):l.classList.remove('on'));
+  // 7-segment
+  document.getElementById('binSequential').textContent='Binary: '+bits.join('');
+  document.getElementById('decSequential').textContent='Decimal: '+counter;
+  document.getElementById('hexSequential').textContent='Hex: '+counter.toString(16).toUpperCase();
+  updateSevenSegment('highSequential',0); updateSevenSegment('lowSequential',counter&0xF);
+  waveform_s.push({A:1,B:0,C:0,D:0,OUT:counter}); renderWaveform(waveform_s,'waveformSequential');
+}
 
-    // Simple HDL parser
-    let OUT=(code.includes('AND')?A&B:(code.includes('OR')?A|B:(code.includes('XOR')?A^B:(code.includes('NOT')?A^1:0))));
-    const bits=[(OUT>>3)&1,(OUT>>2)&1,(OUT>>1)&1,(OUT>>0)&1];
-
-    // LED update
-    const leds=document.getElementById(ledId).querySelectorAll('.led');
-    leds.forEach((led,i)=>bits[i]?led.classList.add('on'):led.classList.remove('on'));
-
-    const decimalValue=(bits[0]<<3)|(bits[1]<<2)|(bits[2]<<1)|bits[3];
-    document.getElementById(binId).innerText='Binary: '+bits.join('');
-    document.getElementById(decId).innerText='Decimal: '+decimalValue;
-    document.getElementById(hexId).innerText='Hex: '+decimalValue.toString(16).toUpperCase();
-
-    updateSevenSegment(highId,(decimalValue>>4)&0xF);
-    updateSevenSegment(lowId,decimalValue&0xF);
-
-    // Truth table update
-    if(truthId){
-        const tbody=document.getElementById(truthId).querySelector('tbody');
-        tbody.innerHTML=`<tr><td>${A}</td><td>${B}</td><td>${C}</td><td>${D}</td><td>${bits.join('')}</td><td>${decimalValue.toString(16).toUpperCase()}</td></tr>`;
-    }
-
-    // Waveform update
-    waveformHistory[tab].push({A,B,C,D,OUT});
-    const waveDiv=document.getElementById(waveId);
-    waveDiv.innerHTML='';
-    ['A','B','C','D','OUT'].forEach(signal=>{
-        const line=document.createElement('div');
-        line.classList.add('waveform-line');
-        line.innerHTML=signal+': ';
-        waveformHistory[tab].forEach(step=>{
-            const b=document.createElement('span');
-            b.classList.add('waveform-bit');
-            b.classList.add(step[signal]? 'on':'off');
-            b.innerText=step[signal];
-            line.appendChild(b);
-        });
-        wave
+// HDL Tab (simple)
+function runHDL(){
+  const A=document.getElementById('A_h').checked?1:0;
+  const B=document.getElementById('B_h').checked?1:0;
+  const C=document.getElementById('C_h').checked?1:0;
+  const D=document.getElementById('D_h').checked?1:0;
+  const code=document.getElementById('hdlLab').value.toUpperCase();
+  let OUT=0;
+  if(code.includes('AND')) OUT=A&B;
+  else if(code.includes('OR')) OUT=A|B;
+  else if(code.includes('XOR')) OUT=A^B;
+  else if(code.includes('NOT')) OUT=A^1;
+  const bits=[(OUT>>3)&1,(OUT>>2)&1,(OUT>>1)&1,(OUT>>0)&1];
+  const tbody=document.getElementById('truthHDL').querySelector('tbody');
+  tbody.innerHTML=`<tr><td>${A}</td><td>${B}</td><td>${C}</td><td>${D}</td><td>${bits.join('')}</td><td>${OUT.toString(16).toUpperCase()}</td></tr>`;
+  const leds=document.getElementById('ledHDL').querySelectorAll('.led');
+  leds.forEach((l,i)=>bits[i]?l.classList.add('on'):l.classList.remove('on'));
+  const val=(bits[0]<<3)|(bits[1]<<2)|(bits[2]<<1)|bits[3];
+  document.getElementById('binHDL').textContent='Binary: '+bits.join('');
+  document.getElementById('decHDL').textContent='Decimal: '+val;
+  document.getElementById('hexHDL').textContent='Hex: '+val.toString(16).toUpperCase();
+  updateSevenSegment('highHDL',(val>>
